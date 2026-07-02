@@ -1,0 +1,12 @@
+# Build artifacts
+build/
+dist/
+out/
+skill_build/
+__pycache__/
+*.pyc
+*.spec.bak
+
+# OS
+Thumbs.db
+.DS_Store

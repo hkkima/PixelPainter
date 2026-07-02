@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PixelPainter</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.css" />
+<style>
+  body { margin: 0; }
+  .gradio-container, .main, .contain, .app, .fillable { overflow: visible !important; }
+  #mainrow { align-items: flex-start !important; }
+  #rightcol { position: sticky !important; top: 8px; align-self: flex-start; }
+  #loading { font-family: sans-serif; padding: 24px; color: #555; }
+</style>
+</head>
+<body>
+<div id="loading">PixelPainter 로딩 중… (첫 실행은 Python 런타임 다운로드로 20~40초 걸릴 수 있어요)</div>
+<gradio-lite>
+<gradio-requirements>
+numpy
+scipy
+pillow
+</gradio-requirements>
+PXCORE_B64 = "IiIi7ZS97IWA7JWE7Yq4IOuzgO2ZmCDsvZTslrQgdjMgLSDqsIEg64uo6rOEIO2GoOq4gCDqsIDriqUuIiIiCmltcG9ydCBudW1weSBhcyBucApmcm9tIFBJTCBpbXBvcnQgSW1hZ2UKZnJvbSBzY2lweSBpbXBvcnQgbmRpbWFnZQppbXBvcnQgY29sb3JzeXMKCiMgLS0tLS0tLS0tLSDrsLDqsr0v7YGs66GtL+yKpOy8gOydvCAodjIg7Jyg7KeAKSAtLS0tLS0tLS0tCmRlZiBtYWtlX2FscGhhKGFyciwgbGlnaHQ9MTkwLCBzYXQ9MjgsIGNsb3NlX2l0ZXI9MSk6CiAgICByLGcsYj1hcnJbLi4uLDBdLmFzdHlwZShpbnQpLGFyclsuLi4sMV0uYXN0eXBlKGludCksYXJyWy4uLiwyXS5hc3R5cGUoaW50KQogICAgbXg9bnAubWF4aW11bShucC5tYXhpbXVtKHIsZyksYik7IG1uPW5wLm1pbmltdW0obnAubWluaW11bShyLGcpLGIpCiAgICBiZ19saWtlPShteD5saWdodCkmKChteC1tbik8c2F0KQogICAgbGJsLF89bmRpbWFnZS5sYWJlbChiZ19saWtlKQogICAgYm9yZGVyPXNldChsYmxbMCw6XSl8c2V0KGxibFstMSw6XSl8c2V0KGxibFs6LDBdKXxzZXQobGJsWzosLTFdKTsgYm9yZGVyLmRpc2NhcmQoMCkKICAgIGZnPX5ucC5pc2luKGxibCxsaXN0KGJvcmRlcikpCiAgICBmZz1uZGltYWdlLmJpbmFyeV9jbG9zaW5nKGZnLGl0ZXJhdGlvbnM9Y2xvc2VfaXRlcik7IGZnPW5kaW1hZ2UuYmluYXJ5X2ZpbGxfaG9sZXMoZmcpCiAgICByZXR1cm4gKGZnKjI1NSkuYXN0eXBlKG5wLnVpbnQ4KQoKZGVmIGNyb3BfdG9fY29udGVudChhcnIsYWxwaGEscGFkPTIpOgogICAgeXMseHM9bnAud2hlcmUoYWxwaGE+MCkKICAgIGlmIGxlbih4cyk9PTA6IHJldHVybiBhcnIsYWxwaGEKICAgIHkwLHkxLHgwLHgxPXlzLm1pbigpLHlzLm1heCgpLHhzLm1pbigpLHhzLm1heCgpCiAgICB5MD1tYXgoMCx5MC1wYWQpO3gwPW1heCgwLHgwLXBhZCk7eTE9bWluKGFyci5zaGFwZVswXS0xLHkxK3BhZCk7eDE9bWluKGFyci5zaGFwZVsxXS0xLHgxK3BhZCkKICAgIHJldHVybiBhcnJbeTA6eTErMSx4MDp4MSsxXSxhbHBoYVt5MDp5MSsxLHgwOngxKzFdCgpkZWYgdGFyZ2V0X3NpemUodyxoLEwpOgogICAgcmV0dXJuIChMLG1heCgxLHJvdW5kKGgqTC93KSkpIGlmIHc+PWggZWxzZSAobWF4KDEscm91bmQodypML2gpKSxMKQoKZGVmIHByZW11bHRfZG93bnNjYWxlKHJnYixhbHBoYSxzaXplKToKICAgIGE9YWxwaGEuYXN0eXBlKG5wLmZsb2F0MzIpLzI1NS4wOyBwbT1yZ2IuYXN0eXBlKG5wLmZsb2F0MzIpKmFbLi4uLE5vbmVdCiAgICBwbV9zPW5wLmFzYXJyYXkoSW1hZ2UuZnJvbWFycmF5KG5wLmNsaXAocG0sMCwyNTUpLmFzdHlwZShucC51aW50OCkpLnJlc2l6ZShzaXplLEltYWdlLkJPWCksZHR5cGU9bnAuZmxvYXQzMikKICAgIGFfcz1ucC5hc2FycmF5KEltYWdlLmZyb21hcnJheShhbHBoYSkucmVzaXplKHNpemUsSW1hZ2UuQk9YKSxkdHlwZT1ucC5mbG9hdDMyKS8yNTUuMAogICAgd2l0aCBucC5lcnJzdGF0ZShkaXZpZGU9Imlnbm9yZSIsaW52YWxpZD0iaWdub3JlIik6CiAgICAgICAgcmdiX3M9bnAud2hlcmUoYV9zWy4uLixOb25lXT4wLjAwMSxwbV9zL2Ffc1suLi4sTm9uZV0sMCkKICAgIHJldHVybiBucC5jbGlwKHJnYl9zLDAsMjU1KS5hc3R5cGUobnAudWludDgpLChhX3MqMjU1KS5hc3R5cGUobnAudWludDgpCgojIC0tLS0tLS0tLS0g656o7ZSEIO2MlOugiO2KuCAoSFNCICsg7Zy0IOyLnO2UhO2KuCkgLS0tLS0tLS0tLQpkZWYgX2ttZWFuc19ucChYLCBrLCBpdGVycz0xMCwgc2VlZD0wKToKICAgICIiIuydmOyhtOyEsSDsl4bripQg6rK965+JIGstbWVhbnMoKyvstIjquLDtmZQpLiDsm7koUHlvZGlkZSnsl5DshJwgc2tsZWFybiDtmoztlLzsmqkuIiIiCiAgICBybmc9bnAucmFuZG9tLlJhbmRvbVN0YXRlKHNlZWQpCiAgICBuPWxlbihYKQogICAgYzA9WFtybmcucmFuZGludChuKV0KICAgIGNlbnRlcnM9W2MwXQogICAgZDI9KChYLWMwKSoqMikuc3VtKDEpCiAgICBmb3IgXyBpbiByYW5nZSgxLGspOgogICAgICAgIHByb2JzPWQyLyhkMi5zdW0oKSsxZS0xMikKICAgICAgICBueHQ9WFtybmcuY2hvaWNlKG4scD1wcm9icyldCiAgICAgICAgY2VudGVycy5hcHBlbmQobnh0KQogICAgICAgIGQyPW5wLm1pbmltdW0oZDIsKChYLW54dCkqKjIpLnN1bSgxKSkKICAgIEM9bnAuYXJyYXkoY2VudGVycyxkdHlwZT1ucC5mbG9hdDMyKQogICAgbGFiZWxzPW5wLnplcm9zKG4sZHR5cGU9bnAuaW50MzIpCiAgICBmb3IgXyBpbiByYW5nZShpdGVycyk6CiAgICAgICAgZGlzdD0oKFhbOixOb25lLDpdLUNbTm9uZSw6LDpdKSoqMikuc3VtKDIpCiAgICAgICAgbGFiZWxzPWRpc3QuYXJnbWluKDEpCiAgICAgICAgZm9yIGogaW4gcmFuZ2UobGVuKEMpKToKICAgICAgICAgICAgbT1YW2xhYmVscz09al0KICAgICAgICAgICAgaWYgbGVuKG0pOiBDW2pdPW0ubWVhbigwKQogICAgcmV0dXJuIEMsbGFiZWxzCgpkZWYgX2NsdXN0ZXIocHgsIGspOgogICAgIiIic2tsZWFybiDsnojsnLzrqbQgS01lYW5zLCDsl4bsnLzrqbQgbnVtcHkg7Y+067CxLiIiIgogICAgdHJ5OgogICAgICAgIGZyb20gc2tsZWFybi5jbHVzdGVyIGltcG9ydCBLTWVhbnMKICAgICAgICBrbT1LTWVhbnMobl9jbHVzdGVycz1rLG5faW5pdD00LHJhbmRvbV9zdGF0ZT0wKS5maXQocHgpCiAgICAgICAgcmV0dXJuIGttLmNsdXN0ZXJfY2VudGVyc18sIGttLmxhYmVsc18KICAgIGV4Y2VwdCBFeGNlcHRpb246CiAgICAgICAgcmV0dXJuIF9rbWVhbnNfbnAocHgsIGspCgoKZGVmIGJ1aWxkX3JhbXBfcGFsZXR0ZShyZ2IsIGFscGhhLCBuX3JhbXBzPTgsIHN0ZXBzPTUsIGh1ZV9zaGlmdD0xOC4wLCBzYXRfYm9vc3Q9MS4xNSk6CiAgICAiIiLrtojtiKzrqoUg7ZS97IWA7J2EIG5fcmFtcHPqsJwg67Kg7J207Iqk66GcIOq1sOynkS4g6rCBIOuyoOydtOyKpOuniOuLpCDrsJ3quLAgc3RlcHPri6gg656o7ZSE66W8CiAgICAtIOyxhOuPhOuKlCDqsJXtlZjqsowg7Jyg7KeAKOyWtOuRkOyauOyImOuhnSAr7LGE64+EKSwg67Cd7J2AIOuBneunjCDsgrTsp50g7ZWY6rCVCiAgICAtIO2ctCDsi5ztlITtirgo7Ja065GQ7Jq47IiY66GdICtodWUsIOuwneydhOyImOuhnSAtaHVlKSDsoIHsmqntlbQg7ZWp7ISxLiIiIgogICAgbWFzaz1hbHBoYT4wCiAgICBweD1yZ2JbbWFza10uYXN0eXBlKG5wLmZsb2F0MzIpCiAgICBpZiBsZW4ocHgpPT0wOiBweD1yZ2IucmVzaGFwZSgtMSwzKS5hc3R5cGUobnAuZmxvYXQzMikKICAgIGlmIGxlbihweCk+MjAwMDA6CiAgICAgICAgaWR4PW5wLnJhbmRvbS5SYW5kb21TdGF0ZSgwKS5jaG9pY2UobGVuKHB4KSwyMDAwMCxyZXBsYWNlPUZhbHNlKTsgcHg9cHhbaWR4XQogICAgaz1taW4obl9yYW1wcyxtYXgoMSxsZW4obnAudW5pcXVlKHB4LmFzdHlwZShucC51aW50OCksYXhpcz0wKSkpKQogICAgY2VudGVycyxsYWJlbHM9X2NsdXN0ZXIocHgsaykKICAgIHBhbD1bXQogICAgZm9yIGMsbGFiIGluIHppcChjZW50ZXJzLHJhbmdlKGspKToKICAgICAgICBtZW1iZXI9cHhbbGFiZWxzPT1sYWJdCiAgICAgICAgaHN2PW5wLmFycmF5KFtjb2xvcnN5cy5yZ2JfdG9faHN2KCoocC8yNTUuMCkpIGZvciBwIGluIG1lbWJlcls6Om1heCgxLGxlbihtZW1iZXIpLy81MDApXV0pCiAgICAgICAgYmFzZV9oLGJhc2VfcyxiYXNlX3Y9Y29sb3JzeXMucmdiX3RvX2hzdigqKGMvMjU1LjApKQogICAgICAgIHZzPWhzdls6LDJdCiAgICAgICAgdm1pbix2bWF4PW5wLnBlcmNlbnRpbGUodnMsMTUpLG5wLnBlcmNlbnRpbGUodnMsODUpCiAgICAgICAgaWYgdm1heC12bWluPDAuMjI6ICAgICAgICAgICAgIyDstZzshowg7Iqk7YysIOuztOyepQogICAgICAgICAgICBtaWQ9KHZtaW4rdm1heCkvMjsgdm1pbix2bWF4PW1heCgwLjA1LG1pZC0wLjEzKSxtaW4oMS4wLG1pZCswLjEzKQogICAgICAgIHZtaW49bWF4KDAuMDUsdm1pbi0wLjAzKTsgdm1heD1taW4oMS4wLHZtYXgrMC4wNSkKICAgICAgICBmb3IgaSBpbiByYW5nZShzdGVwcyk6CiAgICAgICAgICAgIGZyYWM9aS8oc3RlcHMtMSkgaWYgc3RlcHM+MSBlbHNlIDAuNQogICAgICAgICAgICBWPXZtaW4rKHZtYXgtdm1pbikqZnJhYwogICAgICAgICAgICAjIOyxhOuPhDog6rCV7ZWY6rKMIOycoOyngCwg7Ja065GQ7Jq07Kq9IOuNlCDsp4TtlZjqsowoMS4xOCkg67Cd7J2A7Kq966eMIOyVveqwhCDtlZjqsJUoMC44MCkKICAgICAgICAgICAgUz1mbG9hdChucC5jbGlwKGJhc2VfcypzYXRfYm9vc3QqKDEuMTgtMC4zOCpmcmFjKSwwLjAsMS4wKSkKICAgICAgICAgICAgSD0oYmFzZV9oKjM2MC4wICsgaHVlX3NoaWZ0KigwLjUtZnJhYykqMi4wKSUzNjAuMAogICAgICAgICAgICByLGcsYj1jb2xvcnN5cy5oc3ZfdG9fcmdiKEgvMzYwLjAsUyxWKQogICAgICAgICAgICBwYWwuYXBwZW5kKFtyKjI1NSxnKjI1NSxiKjI1NV0pCiAgICBwYWw9bnAuYXJyYXkocGFsLGR0eXBlPW5wLmZsb2F0MzIpCiAgICB1bmlxPW5wLnVuaXF1ZShucC5yb3VuZChwYWwpLmFzdHlwZShucC5pbnQzMiksYXhpcz0wKS5hc3R5cGUobnAuZmxvYXQzMikKICAgIHJldHVybiB1bmlxCgoKZGVmIG1lZGlhbl9wYWxldHRlKHJnYiwgY29sb3JzKToKICAgIHE9SW1hZ2UuZnJvbWFycmF5KHJnYiwiUkdCIikucXVhbnRpemUoY29sb3JzPWNvbG9ycyxtZXRob2Q9SW1hZ2UuTUVESUFOQ1VUKQogICAgcGFsPW5wLmFycmF5KHEuZ2V0cGFsZXR0ZSgpWzpjb2xvcnMqM10sZHR5cGU9bnAuZmxvYXQzMikucmVzaGFwZSgtMSwzKQogICAgcmV0dXJuIHBhbAoKIyAtLS0tLS0tLS0tIO2MlOugiO2KuCDrp6TtlZEgKyDrlJTrjZTrp4EgKG5vbmUvb3JkZXJlZC9mbG95ZCkgLS0tLS0tLS0tLQpkZWYgX2JheWVyKG4pOgogICAgaWYgbj09MTogcmV0dXJuIG5wLmFycmF5KFtbMC4wXV0pCiAgICBtPV9iYXllcihuLy8yKQogICAgcmV0dXJuIG5wLmJsb2NrKFtbNCptLDQqbSsyXSxbNCptKzMsNCptKzFdXSkvKG4qbikKCmRlZiBfbmVhcmVzdChmbGF0LCBwYWxldHRlKToKICAgIG91dD1ucC5lbXB0eShsZW4oZmxhdCksZHR5cGU9bnAuaW50MzIpCiAgICBQPXBhbGV0dGVbTm9uZSw6LDpdCiAgICBzdGVwPTQwOTYKICAgIGZvciBpIGluIHJhbmdlKDAsbGVuKGZsYXQpLHN0ZXApOgogICAgICAgIGNodW5rPWZsYXRbaTppK3N0ZXBdWzosTm9uZSw6XQogICAgICAgIGQ9KChjaHVuay1QKSoqMikuc3VtKDIpCiAgICAgICAgb3V0W2k6aStzdGVwXT1kLmFyZ21pbigxKQogICAgcmV0dXJuIG91dAoKZGVmIF9wYWxldHRlX3NwcmVhZChwYWxldHRlKToKICAgICMg6rCBIOyDieyXkOyEnCDqsIDsnqUg6rCA6rmM7Jq0IOuLpOuluCDsg4nquYzsp4Ag6rGw66as7J2YIOykkeyVmeqwkgogICAgUD1wYWxldHRlOyBEPW5wLnNxcnQoKChQWzosTm9uZSw6XS1QW05vbmUsOiw6XSkqKjIpLnN1bSgyKSkKICAgIG5wLmZpbGxfZGlhZ29uYWwoRCwxZTkpCiAgICByZXR1cm4gZmxvYXQobnAubWVkaWFuKEQubWluKDEpKSkKCmRlZiBtYXBfdG9fcGFsZXR0ZShyZ2IsIHBhbGV0dGUsIGRpdGhlcj0ibm9uZSIsIGJheWVyX249NCwgc3RyZW5ndGg9MS4wKToKICAgIGgsdz1yZ2Iuc2hhcGVbOjJdOyBmbGF0PXJnYi5yZXNoYXBlKC0xLDMpLmFzdHlwZShucC5mbG9hdDMyKQogICAgaWYgZGl0aGVyPT0ib3JkZXJlZCI6CiAgICAgICAgc3ByZWFkPV9wYWxldHRlX3NwcmVhZChwYWxldHRlKSpzdHJlbmd0aAogICAgICAgIGJtPV9iYXllcihiYXllcl9uKTsgdGg9KG5wLnRpbGUoYm0sKGgvL2JheWVyX24rMSx3Ly9iYXllcl9uKzEpKVs6aCw6d10tMC41KQogICAgICAgIGZsYXQ9ZmxhdCsgKHRoLnJlc2hhcGUoLTEsMSkqc3ByZWFkKQogICAgICAgIGlkeD1fbmVhcmVzdChucC5jbGlwKGZsYXQsMCwyNTUpLHBhbGV0dGUpCiAgICAgICAgcmVzPXBhbGV0dGVbaWR4XS5yZXNoYXBlKGgsdywzKQogICAgZWxpZiBkaXRoZXI9PSJmbG95ZCI6CiAgICAgICAgaW1nPWZsYXQucmVzaGFwZShoLHcsMykuY29weSgpCiAgICAgICAgZm9yIHkgaW4gcmFuZ2UoaCk6CiAgICAgICAgICAgIGZvciB4IGluIHJhbmdlKHcpOgogICAgICAgICAgICAgICAgb2xkPWltZ1t5LHhdLmNvcHkoKQogICAgICAgICAgICAgICAgbmk9X25lYXJlc3Qob2xkW05vbmUsOl0scGFsZXR0ZSlbMF07IG5ldz1wYWxldHRlW25pXQogICAgICAgICAgICAgICAgaW1nW3kseF09bmV3OyBlcnI9b2xkLW5ldwogICAgICAgICAgICAgICAgaWYgeCsxPHc6IGltZ1t5LHgrMV0rPWVycio3LzE2CiAgICAgICAgICAgICAgICBpZiB5KzE8aDoKICAgICAgICAgICAgICAgICAgICBpZiB4PjA6IGltZ1t5KzEseC0xXSs9ZXJyKjMvMTYKICAgICAgICAgICAgICAgICAgICBpbWdbeSsxLHhdKz1lcnIqNS8xNgogICAgICAgICAgICAgICAgICAgIGlmIHgrMTx3OiBpbWdbeSsxLHgrMV0rPWVycioxLzE2CiAgICAgICAgcmVzPWltZwogICAgZWxzZToKICAgICAgICBpZHg9X25lYXJlc3QoZmxhdCxwYWxldHRlKTsgcmVzPXBhbGV0dGVbaWR4XS5yZXNoYXBlKGgsdywzKQogICAgcmV0dXJuIG5wLmNsaXAocmVzLDAsMjU1KS5hc3R5cGUobnAudWludDgpCgojIC0tLS0tLS0tLS0g65287J24IO2BtOumsOyXhSAo6rOg7JWEIO2UveyFgCDsoJzqsbApIC0tLS0tLS0tLS0KZGVmIGNsZWFudXBfbGluZXMocmdiLCBhbHBoYSwgbWluX2NsdXN0ZXI9Mik6CiAgICAiIiLsg4nsnbQg64+Z7J287ZWcIOyVhOyjvCDsnpHsnYAg7ISsKDxtaW5fY2x1c3RlcisxIHB4KeydhCDso7zrs4Ag7LWc67mI7IOJ7Jy866GcIO2doeyImC4iIiIKICAgIG91dD1yZ2IuY29weSgpCiAgICBmbGF0PXJnYi5yZXNoYXBlKC0xLDMpCiAgICBjb2xzLGludj1ucC51bmlxdWUoZmxhdCxheGlzPTAscmV0dXJuX2ludmVyc2U9VHJ1ZSkKICAgIGludj1pbnYucmVzaGFwZShyZ2Iuc2hhcGVbOjJdKQogICAgZm9yIGNpIGluIHJhbmdlKGxlbihjb2xzKSk6CiAgICAgICAgbT0oaW52PT1jaSkmKGFscGhhPjApCiAgICAgICAgbGJsLG49bmRpbWFnZS5sYWJlbChtKQogICAgICAgIGlmIG49PTA6IGNvbnRpbnVlCiAgICAgICAgc2l6ZXM9bmRpbWFnZS5zdW0obnAub25lc19saWtlKGxibCksbGJsLHJhbmdlKDEsbisxKSkKICAgICAgICBmb3IgbGksc3ogaW4gZW51bWVyYXRlKHNpemVzLDEpOgogICAgICAgICAgICBpZiBzejw9bWluX2NsdXN0ZXI6CiAgICAgICAgICAgICAgICB5cyx4cz1ucC53aGVyZShsYmw9PWxpKQogICAgICAgICAgICAgICAgZm9yIHkseCBpbiB6aXAoeXMseHMpOgogICAgICAgICAgICAgICAgICAgIG5iPVtdCiAgICAgICAgICAgICAgICAgICAgZm9yIGR5LGR4IGluIFsoLTEsMCksKDEsMCksKDAsLTEpLCgwLDEpXToKICAgICAgICAgICAgICAgICAgICAgICAgeXkseHg9eStkeSx4K2R4CiAgICAgICAgICAgICAgICAgICAgICAgIGlmIDA8PXl5PHJnYi5zaGFwZVswXSBhbmQgMDw9eHg8cmdiLnNoYXBlWzFdIGFuZCBhbHBoYVt5eSx4eF0+MCBhbmQgaW52W3l5LHh4XSE9Y2k6CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBuYi5hcHBlbmQodHVwbGUocmdiW3l5LHh4XSkpCiAgICAgICAgICAgICAgICAgICAgaWYgbmI6CiAgICAgICAgICAgICAgICAgICAgICAgIG91dFt5LHhdPW1heChzZXQobmIpLGtleT1uYi5jb3VudCkKICAgIHJldHVybiBvdXQKCiMgLS0tLS0tLS0tLSDslYTsm4PrnbzsnbggKGRhcmsgLyBzZWxvdXQpIC0tLS0tLS0tLS0KZGVmIGFkZF9vdXRsaW5lKHJnYiwgYWxwaGEsIG1vZGU9ImRhcmsiLCBkYXJrZW49MC40NSk6CiAgICAiIiLsi6Tro6jsl6Mg67CU6rmlIDFweCDrp4Hsl5Ag7Ja065GQ7Jq0IOyVhOybg+udvOyduC4gc2Vsb3V07J2AIOychC/slYTrnpjroZwg66qF7JWUIOywqOuTsS4iIiIKICAgIGlmIG1vZGU9PSJub25lIjogcmV0dXJuIHJnYiwgYWxwaGEKICAgIG09YWxwaGE+MAogICAgZGlsPW5kaW1hZ2UuYmluYXJ5X2RpbGF0aW9uKG0saXRlcmF0aW9ucz0xKQogICAgcmluZz1kaWwmKH5tKQogICAgb3V0PXJnYi5jb3B5KCk7IGE9YWxwaGEuY29weSgpCiAgICB5cyx4cz1ucC53aGVyZShyaW5nKQogICAgSD1yZ2Iuc2hhcGVbMF0KICAgIGZvciB5LHggaW4gemlwKHlzLHhzKToKICAgICAgICAjIOyduOygkSDsoITqsr3sg4kg7Y+J6reg7J2EIOyWtOuRoeqyjAogICAgICAgIG5iPVtdCiAgICAgICAgZm9yIGR5LGR4IGluIFsoLTEsMCksKDEsMCksKDAsLTEpLCgwLDEpLCgtMSwtMSksKDEsMSksKC0xLDEpLCgxLC0xKV06CiAgICAgICAgICAgIHl5LHh4PXkrZHkseCtkeAogICAgICAgICAgICBpZiAwPD15eTxyZ2Iuc2hhcGVbMF0gYW5kIDA8PXh4PHJnYi5zaGFwZVsxXSBhbmQgbVt5eSx4eF06CiAgICAgICAgICAgICAgICBuYi5hcHBlbmQocmdiW3l5LHh4XSkKICAgICAgICBpZiBub3QgbmI6IGNvbnRpbnVlCiAgICAgICAgYmFzZT1ucC5tZWFuKG5iLGF4aXM9MCkKICAgICAgICBmPWRhcmtlbgogICAgICAgIGlmIG1vZGU9PSJzZWxvdXQiOgogICAgICAgICAgICBmPTAuMzAgaWYgeTwgSCowLjUgZWxzZSAwLjU1ICAgIyDsnIQo6rSR7JuQKeuKlCDrjZwsIOyVhOuemOuKlCDrjZQg7Ja065Gh6rKMCiAgICAgICAgb3V0W3kseF09bnAuY2xpcChiYXNlKigxLWYpLDAsMjU1KQogICAgICAgIGFbeSx4XT0yNTUKICAgIHJldHVybiBvdXQsIGEKCmRlZiBhZGRfZWRnZXMocmdiLCBhbHBoYSwgcGFsZXR0ZSwgdGhyZXNoPTYwLCBkYXJrZW49MC41NSwgdGhpbj1UcnVlKToKICAgICIiIuuCtOu2gCDsg4kv66qF7JWUIOqyveqzhOulvCDqsJDsp4DtlbQg7Ja065Gh6rKMKOyeie2BrCkuIO2MlOugiO2KuOyXkCDsiqTrg4XtlbQg7IOJIOq3nOycqCDsnKDsp4AuCiAgICDtkoAg7J2865+s7Iqk7Yq47LKY65+8IOuwsOqyveydtCDsnojripQg6re466a87JeQ7IScICfrjanslrTrpqwg7Jyk6rO9J+ydhCDrp4zrk6TslrQg7KSA64ukLiIiIgogICAgbT1hbHBoYT4wCiAgICBsdW09MC4yOTkqcmdiWy4uLiwwXSswLjU4NypyZ2JbLi4uLDFdKzAuMTE0KnJnYlsuLi4sMl0KICAgIGd4PW5kaW1hZ2Uuc29iZWwobHVtLGF4aXM9MSxtb2RlPSJuZWFyZXN0Iik7IGd5PW5kaW1hZ2Uuc29iZWwobHVtLGF4aXM9MCxtb2RlPSJuZWFyZXN0IikKICAgIG1hZz1ucC5oeXBvdChneCxneSkKICAgIGVkZ2U9KG1hZz50aHJlc2gpJm0KICAgIGlmIHRoaW46CiAgICAgICAgIyDsnbTspJEg65GQ6ruYIOuwqeyngDog642UIOyWtOuRkOyatCjslYjsqr0pIO2UveyFgOunjCDsnontgazroZwKICAgICAgICBkYXJrZXI9bHVtPD1uZGltYWdlLm1pbmltdW1fZmlsdGVyKGx1bSxzaXplPTMpKzEKICAgICAgICBlZGdlPWVkZ2UmZGFya2VyCiAgICBvdXQ9cmdiLmNvcHkoKS5hc3R5cGUobnAuZmxvYXQzMikKICAgIGluaz1vdXRbZWRnZV0qKDEtZGFya2VuKQogICAgIyDtjJTroIjtirgg7Iqk64OFCiAgICBpZiBsZW4oaW5rKToKICAgICAgICBpZHg9X25lYXJlc3QobnAuY2xpcChpbmssMCwyNTUpLHBhbGV0dGUpCiAgICAgICAgb3V0W2VkZ2VdPXBhbGV0dGVbaWR4XQogICAgcmV0dXJuIG5wLmNsaXAob3V0LDAsMjU1KS5hc3R5cGUobnAudWludDgpCgoKZGVmIGZpbmlzaF9hbHBoYShhbHBoYV9hcnIsIG1vZGUsIHRocmVzaCk6CiAgICBhPUltYWdlLmZyb21hcnJheShhbHBoYV9hcnIpCiAgICBpZiBtb2RlPT0iYmluYXJ5IjogcmV0dXJuIGEucG9pbnQobGFtYmRhIHY6MjU1IGlmIHY+PXRocmVzaCBlbHNlIDApCiAgICByZXR1cm4gYQoKIyAtLS0tLS0tLS0tIO2Gte2VqSDtjIzsnbTtlITrnbzsnbggLS0tLS0tLS0tLQpkZWYgcGl4ZWxhdGUocGF0aCwgcmVzLCBjZmcpOgogICAgYXJyPW5wLmFzYXJyYXkoSW1hZ2Uub3BlbihwYXRoKS5jb252ZXJ0KCJSR0IiKSkKICAgIHJldHVybiBwaXhlbGF0ZV9yZ2IoYXJyLCByZXMsIGNmZykKCmRlZiBwaXhlbGF0ZV9yZ2IoYXJyLCByZXMsIGNmZyk6CiAgICBhcnI9bnAuYXNjb250aWd1b3VzYXJyYXkoYXJyWy4uLiw6M10pLmFzdHlwZShucC51aW50OCkKICAgIGlmIGNmZy5nZXQoInJlbW92ZWJnIixUcnVlKToKICAgICAgICBhbHBoYT1tYWtlX2FscGhhKGFycixjZmcuZ2V0KCJsaWdodCIsMTkwKSxjZmcuZ2V0KCJzYXQiLDI4KSkKICAgIGVsc2U6CiAgICAgICAgYWxwaGE9bnAuZnVsbChhcnIuc2hhcGVbOjJdLDI1NSxucC51aW50OCkKICAgIGlmIGNmZy5nZXQoImNyb3AiLFRydWUpOgogICAgICAgIGFycixhbHBoYT1jcm9wX3RvX2NvbnRlbnQoYXJyLGFscGhhKQogICAgaCx3PWFyci5zaGFwZVs6Ml07IHNpemU9dGFyZ2V0X3NpemUodyxoLHJlcykKICAgIHJnYl9zLGFfcz1wcmVtdWx0X2Rvd25zY2FsZShhcnIsYWxwaGEsc2l6ZSkKICAgICMg7YyU66CI7Yq4CiAgICBpZiBjZmcuZ2V0KCJwYWxldHRlIiwibWVkaWFuIik9PSJyYW1wIjoKICAgICAgICBwYWw9YnVpbGRfcmFtcF9wYWxldHRlKHJnYl9zLGFfcyxjZmcuZ2V0KCJyYW1wcyIsOCksY2ZnLmdldCgicmFtcF9zdGVwcyIsNSksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmcuZ2V0KCJodWVfc2hpZnQiLDE4LjApLGNmZy5nZXQoInNhdF9ib29zdCIsMS4wNSkpCiAgICBlbHNlOgogICAgICAgIHBhbD1tZWRpYW5fcGFsZXR0ZShyZ2JfcyxjZmcuZ2V0KCJjb2xvcnMiLDI0KSkKICAgIHE9bWFwX3RvX3BhbGV0dGUocmdiX3MscGFsLGNmZy5nZXQoImRpdGhlciIsIm5vbmUiKSxjZmcuZ2V0KCJiYXllciIsNCksY2ZnLmdldCgic3RyZW5ndGgiLDEuMCkpCiAgICBpZiBjZmcuZ2V0KCJjbGVhbnVwIixGYWxzZSk6CiAgICAgICAgcT1jbGVhbnVwX2xpbmVzKHEsYV9zLGNmZy5nZXQoIm1pbl9jbHVzdGVyIiwyKSkKICAgIG9sPWNmZy5nZXQoIm91dGxpbmUiLCJub25lIikKICAgIGlmIG9sIGluICgiaW5rIiwiYWxsIik6CiAgICAgICAgcT1hZGRfZWRnZXMocSxhX3MscGFsLGNmZy5nZXQoImVkZ2VfdGhyZXNoIiw2MCksY2ZnLmdldCgiZWRnZV9kYXJrZW4iLDAuNTUpKQogICAgaWYgb2wgaW4gKCJkYXJrIiwic2Vsb3V0IiwiYWxsIik6CiAgICAgICAgc2lsPSJzZWxvdXQiIGlmIG9sPT0ic2Vsb3V0IiBlbHNlICJkYXJrIgogICAgICAgIHEsYV9zPWFkZF9vdXRsaW5lKHEsYV9zLHNpbCxjZmcuZ2V0KCJkYXJrZW4iLDAuNDUpKQogICAgb3V0PUltYWdlLmZyb21hcnJheShxLCJSR0IiKS5jb252ZXJ0KCJSR0JBIikKICAgIG91dC5wdXRhbHBoYShmaW5pc2hfYWxwaGEoYV9zLCJiaW5hcnkiIGlmIGNmZy5nZXQoInJlbW92ZWJnIixUcnVlKSBlbHNlICJrZWVwIixjZmcuZ2V0KCJhdGhyZXNoIiwxMjgpKSkKICAgIHJldHVybiBvdXQsc2l6ZSxwYWwKCmRlZiB1cHNjYWxlKGltZyx0YXJnZXRfbG9uZz01MTIpOgogICAgdyxoPWltZy5zaXplOyBmPW1heCgxLHRhcmdldF9sb25nLy9tYXgodyxoKSkKICAgIHJldHVybiBpbWcucmVzaXplKCh3KmYsaCpmKSxJbWFnZS5ORUFSRVNUKQo="
+
+import base64
+import numpy as np
+from PIL import Image
+exec(base64.b64decode(PXCORE_B64).decode("utf-8"), globals())
+import gradio as gr
+
+PRESETS = {
+    "coin (아이콘)":    dict(res=64,  removebg=True,  crop=True,  athresh=170,
+                            palette="ramp", ramps=7,  ramp_steps=5, hue_shift=18, sat_boost=1.15,
+                            colors=32, dither="ordered", bayer=4, strength=1.0),
+    "ui (버튼)":        dict(res=96,  removebg=True,  crop=True,  athresh=128,
+                            palette="ramp", ramps=6,  ramp_steps=4, hue_shift=18, sat_boost=1.15,
+                            colors=24, dither="ordered", bayer=4, strength=1.0),
+    "character (투명)": dict(res=128, removebg=True,  crop=True,  athresh=128,
+                            palette="ramp", ramps=8,  ramp_steps=5, hue_shift=18, sat_boost=1.15,
+                            colors=40, dither="ordered", bayer=4, strength=1.0),
+    "full (배경 포함)": dict(res=200, removebg=False, crop=False, athresh=128,
+                            palette="ramp", ramps=10, ramp_steps=6, hue_shift=18, sat_boost=1.15,
+                            colors=60, dither="ordered", bayer=4, strength=1.0),
+}
+
+def _cfg(removebg, crop, athresh, palette, ramps, ramp_steps, hue_shift, sat_boost,
+         colors, dither, bayer, strength):
+    return dict(removebg=removebg, crop=crop, athresh=int(athresh),
+                palette=palette, colors=int(colors), ramps=int(ramps),
+                ramp_steps=int(ramp_steps), hue_shift=float(hue_shift),
+                sat_boost=float(sat_boost), dither=dither, bayer=int(bayer),
+                strength=float(strength), outline="none", darken=0.45,
+                edge_thresh=60, edge_darken=0.55, cleanup=False, min_cluster=2)
+
+def _palette_strip(pal, width=320, h=28):
+    n = len(pal)
+    if n == 0:
+        return Image.new("RGB", (width, h), (240, 240, 240))
+    sw = max(1, width // n)
+    img = Image.new("RGB", (sw * n, h), (255, 255, 255))
+    px = img.load()
+    for i, c in enumerate(pal.astype(int)):
+        col = tuple(int(v) for v in c)
+        for x in range(sw):
+            for y in range(h):
+                px[i * sw + x, y] = col
+    return img.resize((width, h), Image.NEAREST)
+
+def convert(img, res, preview_px, removebg, crop, athresh, palette, ramps, ramp_steps,
+            hue_shift, sat_boost, colors, dither, bayer, strength):
+    if img is None:
+        return None, None, None, "이미지를 올려주세요 냥"
+    arr = np.asarray(img.convert("RGB"))
+    cfg = _cfg(removebg, crop, athresh, palette, ramps, ramp_steps, hue_shift,
+               sat_boost, colors, dither, bayer, strength)
+    out, size, pal = pixelate_rgb(arr, int(res), cfg)
+    prev = upscale(out, int(preview_px))
+    info = "출력 " + str(size[0]) + "x" + str(size[1]) + "  |  팔레트 " + str(len(pal)) + "색  |  " + palette + " / " + dither
+    return prev, out, _palette_strip(pal), info
+
+def apply_preset(name):
+    p = PRESETS.get(name)
+    keys = ["res", "removebg", "crop", "athresh", "palette", "ramps",
+            "ramp_steps", "hue_shift", "sat_boost", "colors", "dither",
+            "bayer", "strength"]
+    if not p:
+        return [gr.update() for _ in keys]
+    return [gr.update(value=p[k]) for k in keys]
+
+with gr.Blocks(title="PixelPainter") as demo:
+    gr.Markdown("## PixelPainter (Web) — 픽셀아트 변환\n브라우저에서 바로 돌아갑니다. 이미지를 올리고 슬라이더를 움직여 보세요.")
+    with gr.Row(elem_id="mainrow"):
+        with gr.Column(scale=1, elem_id="leftcol"):
+            img = gr.Image(type="pil", label="입력 이미지", height=240)
+            preset = gr.Dropdown(list(PRESETS.keys()), label="프리셋 (선택 시 값 자동 채움)")
+            with gr.Accordion("기본", open=True):
+                res = gr.Slider(16, 320, value=128, step=1, label="해상도(긴 변 px)")
+                preview_px = gr.Slider(128, 768, value=512, step=32, label="미리보기 확대 px")
+            with gr.Accordion("배경 / 크롭", open=False):
+                removebg = gr.Checkbox(True, label="배경 제거 (투명 스프라이트)")
+                crop = gr.Checkbox(True, label="콘텐츠 크롭")
+                athresh = gr.Slider(0, 255, value=128, step=1, label="알파 임계값(글로우 억제 up)")
+            with gr.Accordion("팔레트", open=True):
+                palette = gr.Radio(["ramp", "median"], value="ramp", label="팔레트 모드")
+                ramps = gr.Slider(2, 16, value=8, step=1, label="램프 개수")
+                ramp_steps = gr.Slider(2, 8, value=5, step=1, label="램프 단계")
+                hue_shift = gr.Slider(0, 40, value=18, step=1, label="휴 시프트(도)")
+                sat_boost = gr.Slider(0.8, 1.5, value=1.15, step=0.05, label="채도 부스트")
+                colors = gr.Slider(4, 64, value=32, step=1, label="색 수 (median 모드)")
+            with gr.Accordion("디더링", open=True):
+                dither = gr.Radio(["none", "ordered", "floyd"], value="ordered", label="디더 방식")
+                bayer = gr.Radio([2, 4, 8], value=4, label="Bayer 행렬")
+                strength = gr.Slider(0, 2, value=1.0, step=0.1, label="디더 강도")
+        with gr.Column(scale=1, elem_id="rightcol"):
+            preview = gr.Image(label="미리보기 (nearest 확대)", height=380)
+            pixel = gr.Image(label="실물 해상도 PNG (다운로드 아이콘 클릭)", height=160)
+            pal_img = gr.Image(label="팔레트", height=40)
+            info = gr.Markdown()
+
+    controls = [res, preview_px, removebg, crop, athresh, palette, ramps, ramp_steps,
+                hue_shift, sat_boost, colors, dither, bayer, strength]
+    outputs = [preview, pixel, pal_img, info]
+    for c in [img] + controls:
+        ev = c.release if isinstance(c, gr.Slider) else c.change
+        ev(convert, [img] + controls, outputs)
+    preset.change(apply_preset, preset,
+                  [res, removebg, crop, athresh, palette, ramps, ramp_steps,
+                   hue_shift, sat_boost, colors, dither, bayer, strength]).then(
+                  convert, [img] + controls, outputs)
+
+demo.launch()
+
+</gradio-lite>
+<script>
+  // gradio-lite가 마운트되면 로딩 문구 제거
+  const _obs = new MutationObserver(() => {
+    if (document.querySelector('gradio-lite .gradio-container')) {
+      const el = document.getElementById('loading'); if (el) el.remove();
+    }
+  });
+  _obs.observe(document.body, {childList:true, subtree:true});
+</script>
+</body>
+</html>
